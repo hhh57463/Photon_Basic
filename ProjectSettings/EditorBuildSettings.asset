@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/PhotonGame.unity
+    guid: 12e5c67ef3632704f97bd594302f2a53
   m_configObjects: {}

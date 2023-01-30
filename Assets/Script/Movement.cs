@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
+using Cinemachine;
 
 public class Movement : MonoBehaviour
 {
@@ -15,8 +18,9 @@ public class Movement : MonoBehaviour
     Vector3 hitPoint;           // 광선과 부딪히는 지점을 계산하기 위함
 
     public float moveSpeed = 10.0f;
-    float h => Input.GetAxis("Horizontal");
-    float v => Input.GetAxis("Vertical");
+
+    PhotonView pv;
+    CinemachineVirtualCamera virtualCamera;
 
     void Start()
     {
@@ -25,15 +29,32 @@ public class Movement : MonoBehaviour
         animator = GetComponent<Animator>();
         camera = Camera.main;
 
+        pv = GetComponent<PhotonView>();
+        virtualCamera = GameObject.FindObjectOfType<CinemachineVirtualCamera>();
+
+        // 자신의 케릭터일 경우 시네머신 카메라 연결
+        if (pv.IsMine)
+        {
+            virtualCamera.Follow = transform;
+            virtualCamera.LookAt = transform;
+        }
+
         // 가상의 바닥을 기준으로 주인공의 위치 생성
         plane = new Plane(transform.up, transform.position);
     }
 
     void Update()
     {
-        Move();
-        Turn();
+        // 자신의 케릭터(네트워크 객체)만 컨트롤
+        if (pv.IsMine)
+        {
+            Move();
+            Turn();
+        }
     }
+
+    float h => Input.GetAxis("Horizontal");
+    float v => Input.GetAxis("Vertical");
 
     void Move()
     {
