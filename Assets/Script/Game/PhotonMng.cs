@@ -81,4 +81,12 @@ public class PhotonMng : MonoBehaviourPunCallbacks
 
         PhotonNetwork.Instantiate("Player", points[idx].position, points[idx].rotation, 0);          // 캐릭터 생성
     }
+
+    /**
+    *@brief 연결이 끊겼을때 호출되는 콜백 함수
+    */
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        Debug.Log($"{cause}");
+    }
 }

@@ -64,17 +64,14 @@ public class Movement : MonoBehaviour
             Turn();
             Fire();
         }
-        if(HP<=0)
+        if(HP <= 0)
         {
-            PhotonNetwork.Disconnect();
-            Debug.Log("게임 오버");
+            DisconnectedPhoton();
         }
     }
 
     float h => Input.GetAxis("Horizontal");
     float v => Input.GetAxis("Vertical");
-
-    float jumpPower = 5.0f;
 
     void Move()
     {
@@ -84,7 +81,7 @@ public class Movement : MonoBehaviour
         cameraRight.y = 0.0f;
 
         Vector3 moveDir = (cameraForward * v) + (cameraRight * h);
-        moveDir.Set(moveDir.x, transform.position.y, moveDir.z);
+        moveDir.Set(moveDir.x, 0, moveDir.z);
 
         controller.SimpleMove(moveDir * moveSpeed);
 
@@ -132,4 +129,6 @@ public class Movement : MonoBehaviour
             }
         }
     }
+
+    public void DisconnectedPhoton() => PhotonNetwork.Disconnect();
 }
