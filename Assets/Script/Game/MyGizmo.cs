@@ -12,14 +12,4 @@ public class MyGizmo : MonoBehaviour
         Gizmos.color = _color;                                      // 기즈모 색상 설정
         Gizmos.DrawSphere(transform.position, _radius);             // 구 형태의 기즈모 생성
     }
-
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
-    }
 }

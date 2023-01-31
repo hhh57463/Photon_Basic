@@ -22,6 +22,16 @@ public class Movement : MonoBehaviour
     PhotonView pv;
     CinemachineVirtualCamera virtualCamera;
 
+    [SerializeField]
+    GameObject BulletPrefab;
+
+    Transform GameTr;
+
+    [SerializeField]
+    Transform GunTr;
+
+    public int HP = 5;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -41,6 +51,8 @@ public class Movement : MonoBehaviour
 
         // 가상의 바닥을 기준으로 주인공의 위치 생성
         plane = new Plane(transform.up, transform.position);
+        GameTr = GameObject.Find("Game").transform;
+        transform.parent = GameTr;
     }
 
     void Update()
@@ -50,11 +62,19 @@ public class Movement : MonoBehaviour
         {
             Move();
             Turn();
+            Fire();
+        }
+        if(HP<=0)
+        {
+            PhotonNetwork.Disconnect();
+            Debug.Log("게임 오버");
         }
     }
 
     float h => Input.GetAxis("Horizontal");
     float v => Input.GetAxis("Vertical");
+
+    float jumpPower = 5.0f;
 
     void Move()
     {
@@ -64,7 +84,7 @@ public class Movement : MonoBehaviour
         cameraRight.y = 0.0f;
 
         Vector3 moveDir = (cameraForward * v) + (cameraRight * h);
-        moveDir.Set(moveDir.x, 0.0f, moveDir.z);
+        moveDir.Set(moveDir.x, transform.position.y, moveDir.z);
 
         controller.SimpleMove(moveDir * moveSpeed);
 
@@ -90,5 +110,26 @@ public class Movement : MonoBehaviour
         lookDir.y = 0;
 
         transform.localRotation = Quaternion.LookRotation(lookDir);
+    }
+
+    float BulletTimeSave;
+    float Delay = 0.5f;
+    bool BulletShootDelay;
+    void Fire()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            if (!BulletShootDelay)
+            {                                       //일반총알
+                BulletTimeSave = Time.time;
+                BulletShootDelay = true;
+                Instantiate(BulletPrefab, GunTr.position, Quaternion.Euler(transform.eulerAngles), GameTr);
+            }
+
+            if (Time.time > BulletTimeSave + Delay)
+            {                                //연사속도
+                BulletShootDelay = false;
+            }
+        }
     }
 }

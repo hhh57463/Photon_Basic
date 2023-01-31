@@ -6,14 +6,11 @@ using Photon.Realtime;
 
 public class PhotonMng : MonoBehaviourPunCallbacks
 {
-    readonly string version = "1.0f";               // 버전
-    string userID = "Mindol";                       // 사용자 아이디
-
     void Awake()
     {
         PhotonNetwork.AutomaticallySyncScene = true;                            // 같은 룸의 유저들에게 자동으로 씬을 로딩
-        PhotonNetwork.GameVersion = version;                                    // 같은 버전의 유저끼리 접속 허용
-        PhotonNetwork.NickName = userID;                                        // 유저 아이디 할당
+        PhotonNetwork.GameVersion = Mng.I.version;                              // 같은 버전의 유저끼리 접속 허용
+        PhotonNetwork.NickName = Mng.I.NickName;                                // 유저 아이디 할당
         Debug.Log(PhotonNetwork.SendRate);                                      // 포톤 서버와 통신 횟수 설정 (초당 30회)
         PhotonNetwork.ConnectUsingSettings();                                   // 서버 접속
     }
@@ -83,15 +80,5 @@ public class PhotonMng : MonoBehaviourPunCallbacks
         int idx = Random.Range(0, points.Length);
 
         PhotonNetwork.Instantiate("Player", points[idx].position, points[idx].rotation, 0);          // 캐릭터 생성
-    }
-
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
     }
 }
