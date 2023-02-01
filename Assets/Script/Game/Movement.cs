@@ -30,7 +30,9 @@ public class Movement : MonoBehaviour
     [SerializeField]
     Transform GunTr;
 
+    public string PlayerName;
     public int HP = 5;
+    bool PlayerDie;
 
     void Start()
     {
@@ -51,22 +53,33 @@ public class Movement : MonoBehaviour
 
         // 가상의 바닥을 기준으로 주인공의 위치 생성
         plane = new Plane(transform.up, transform.position);
-        GameTr = GameObject.Find("Game").transform;
+        GameTr = GameObject.Find("Players").transform;
         transform.parent = GameTr;
+        HP = 5;
+        PlayerDie = false;
     }
 
     void Update()
     {
         // 자신의 케릭터(네트워크 객체)만 컨트롤
-        if (pv.IsMine)
+        if (pv.IsMine && HP > 0)
         {
             Move();
             Turn();
             Fire();
         }
-        if(HP <= 0)
+        if (HP <= 0)
         {
-            DisconnectedPhoton();
+            if (!PlayerDie)
+            {
+                GameMng.I.PlayerCnt--;
+                PlayerDie = false;
+                virtualCamera.Follow = null;
+                virtualCamera.LookAt = null;
+                transform.position = new Vector3(0, -10000, 0);
+                GameMng.I.DeathScene.SetActive(true);
+            }
+            //DisconnectedPhoton();
         }
     }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Mng : MonoBehaviour
 {
-    public static Mng _instance;
+    static Mng _instance;
 
     public static Mng I
     {
@@ -25,4 +25,7 @@ public class Mng : MonoBehaviour
 
     public readonly string version = "1.0f";
     public string NickName;
+    public string RoomName;
+    public bool MakingRoom;
+    public bool RandomRoom;
 }

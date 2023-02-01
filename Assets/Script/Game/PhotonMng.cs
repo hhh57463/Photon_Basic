@@ -31,7 +31,17 @@ public class PhotonMng : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         Debug.Log($"PhotonNetwork.InLobby = {PhotonNetwork.InLobby}");
-        PhotonNetwork.JoinRandomRoom();                                         // 랜덤 매치메이킹 기능
+        if (Mng.I.MakingRoom)
+        {
+            PhotonNetwork.CreateRoom(Mng.I.RoomName);                                   // 해당 이름으로 룸 생성
+        }
+        else
+        { 
+            if (Mng.I.RandomRoom)
+                PhotonNetwork.JoinRandomRoom();                                         // 랜덤 매치메이킹 기능
+            else
+                PhotonNetwork.JoinRoom(Mng.I.RoomName);                                 // 해당 이름을 가진 룸 입장
+        }
     }
 
     /**
@@ -70,7 +80,7 @@ public class PhotonMng : MonoBehaviourPunCallbacks
         Debug.Log($"Player Count = {PhotonNetwork.CurrentRoom.PlayerCount}");
 
         // 룸에 접속한 사용자 정보 확인
-        foreach(var player in PhotonNetwork.CurrentRoom.Players)
+        foreach (var player in PhotonNetwork.CurrentRoom.Players)
         {
             Debug.Log($"{player.Value.NickName}, {player.Value.ActorNumber}");          // 플레이어 이름, 플레이어 고유 번호 출력
         }
@@ -79,7 +89,30 @@ public class PhotonMng : MonoBehaviourPunCallbacks
         Transform[] points = GameObject.Find("SpawnPointGroup").GetComponentsInChildren<Transform>();
         int idx = Random.Range(0, points.Length);
 
-        PhotonNetwork.Instantiate("Player", points[idx].position, points[idx].rotation, 0);          // 캐릭터 생성
+        Movement Player = PhotonNetwork.Instantiate("Player", points[idx].position, points[idx].rotation, 0).GetComponent<Movement>();          // 캐릭터 생성
+        Player.PlayerName = Mng.I.NickName;
+        GameMng.I.players.Add(Player);
+        GameMng.I.PlayerCnt++;
+    }
+
+    /**
+    *@brief 현재 룸에 새로운 유저가 들어왔을때 호출되는 콜백 함수
+    */
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        Debug.Log("유저 입장");
+        GameMng.I.PlayerCnt++;
+        StartCoroutine(GameMng.I.RenewalPlayer());
+    }
+
+    /**
+    *@brief 현재 룸에 유저가 나갔을때 호출되는 콜백 함수
+    */
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        Debug.Log("유저 퇴장");
+        GameMng.I.PlayerCnt--;
+        StartCoroutine(GameMng.I.RenewalPlayer());
     }
 
     /**

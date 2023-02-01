@@ -1177,7 +1177,7 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2.5
+  m_Height: 2
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
@@ -1199,6 +1199,7 @@ MonoBehaviour:
   moveSpeed: 10
   BulletPrefab: {fileID: 8222332823237018225, guid: bbfb9a20b68ab4c3f830a9872b675b34, type: 3}
   GunTr: {fileID: 5985870241625856316}
+  PlayerName: 
   HP: 5
 --- !u!114 &8222061860987020269
 MonoBehaviour:
